@@ -9,21 +9,42 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Nunito',sans-serif;background:#F5F2EC;min-height:100vh}
 
-/* MODAL */
+/* MODALS */
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.78);display:flex;
   align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(6px)}
 .modal-ov.hidden{display:none}
-.modal{background:#fff;border-radius:20px;padding:32px 28px;
-  max-width:300px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.modal-icon{font-size:44px;margin-bottom:8px}
-.modal h2{font-size:22px;font-weight:800;color:#1C1917;margin-bottom:4px}
-.modal p{font-size:13px;color:#9CA3AF;margin-bottom:20px;line-height:1.5}
-.ubtn{width:100%;padding:14px;border-radius:12px;border:none;cursor:pointer;
-  font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:#fff;
+.modal{background:#fff;border-radius:20px;padding:28px 24px;
+  max-width:320px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-center{text-align:center}
+.modal-icon{font-size:40px;margin-bottom:6px;display:block;text-align:center}
+.modal h2{font-size:21px;font-weight:800;color:#1C1917;margin-bottom:4px;text-align:center}
+.modal p{font-size:13px;color:#9CA3AF;margin-bottom:18px;line-height:1.5;text-align:center}
+.ubtn{width:100%;padding:13px;border-radius:12px;border:none;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:#fff;
   margin-bottom:8px;transition:transform .1s;display:flex;
   align-items:center;justify-content:center;gap:8px}
 .ubtn:last-child{margin-bottom:0}
 .ubtn:active{transform:scale(.97)}
+
+/* TASK MODAL EXTRAS */
+.tm-label{font-size:12px;font-weight:800;color:#6B7280;text-transform:uppercase;
+  letter-spacing:.6px;margin-bottom:7px;margin-top:16px;display:block}
+.tm-input{width:100%;border:2px solid #E5E7EB;border-radius:12px;
+  font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;
+  padding:11px 13px;color:#1C1917;outline:none;transition:border-color .2s}
+.tm-input:focus{border-color:#1C1917}
+.sel-row{display:flex;gap:6px;flex-wrap:wrap}
+.sel-btn{flex:1;min-width:60px;padding:9px 6px;border:2px solid #E5E7EB;
+  border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;
+  font-weight:700;background:#F9FAFB;color:#6B7280;cursor:pointer;
+  transition:all .15s;white-space:nowrap}
+.sel-btn.active{border-color:#1C1917;background:#1C1917;color:#fff}
+.sel-btn.active.pA{border-color:#2563EB;background:#EFF6FF;color:#2563EB}
+.sel-btn.active.pB{border-color:#7C3AED;background:#F5F3FF;color:#7C3AED}
+.sel-btn.active.pM{border-color:#1C1917;background:#F4F4F5;color:#1C1917}
+.sel-btn.active.pT{border-color:#D97706;background:#FFFBEB;color:#D97706}
+.tm-btns{display:flex;gap:8px;margin-top:20px}
+.tm-btns .ubtn{margin-bottom:0}
 
 /* HEADER */
 .hdr{background:#1C1917;padding:14px 16px 0;position:sticky;top:0;z-index:10}
@@ -36,7 +57,6 @@ body{font-family:'Nunito',sans-serif;background:#F5F2EC;min-height:100vh}
 .chip:hover{background:rgba(255,255,255,.2)}
 .chip span{color:#fff;font-size:12px;font-weight:700}
 .cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-
 .tabs{display:flex;gap:2px;overflow-x:auto}
 .tb{background:transparent;color:#9CA3AF;border:none;cursor:pointer;
   padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Nunito',sans-serif;
@@ -92,6 +112,20 @@ body{font-family:'Nunito',sans-serif;background:#F5F2EC;min-height:100vh}
 .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;
   flex-shrink:0;margin-top:1px}
 .task.done .badge{background:#F3F4F6!important;color:#9CA3AF!important}
+.prio-badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;
+  display:inline-block;margin-top:3px}
+.del-btn{background:none;border:none;cursor:pointer;font-size:15px;
+  opacity:.35;padding:2px 4px;flex-shrink:0;transition:opacity .15s;margin-top:0px}
+.del-btn:hover{opacity:.8}
+.add-task-btn{width:100%;margin-top:10px;padding:11px;border:2px dashed #D1D5DB;
+  border-radius:10px;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:700;color:#9CA3AF;cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.add-task-btn:hover{border-color:#1C1917;color:#1C1917;background:#fff}
+.custom-section-label{font-size:11px;font-weight:800;color:#9CA3AF;
+  text-transform:uppercase;letter-spacing:.7px;margin:14px 0 8px;
+  display:flex;align-items:center;gap:6px}
+.custom-section-label::after{content:'';flex:1;height:1px;background:#E5E7EB}
 
 /* LEGEND */
 .leg{margin-top:16px;background:#fff;border-radius:12px;padding:12px 16px}
@@ -146,13 +180,45 @@ body{font-family:'Nunito',sans-serif;background:#F5F2EC;min-height:100vh}
 
 <!-- MODAL: selección de usuario -->
 <div class="modal-ov" id="modal">
-  <div class="modal">
-    <div class="modal-icon">🏠</div>
+  <div class="modal modal-center">
+    <span class="modal-icon">🏠</span>
     <h2>¿Quién eres?</h2>
     <p>Tu nombre quedará registrado cuando marques una tarea como completada</p>
     <button class="ubtn" style="background:#2563EB" onclick="setUser('Andrea')">🏊‍♀️ Andrea</button>
     <button class="ubtn" style="background:#7C3AED" onclick="setUser('Benjamín')">🚴 Benjamín</button>
     <button class="ubtn" style="background:#1C1917" onclick="setUser('Martín')">🥊 Martín</button>
+  </div>
+</div>
+
+<!-- MODAL: nueva tarea -->
+<div class="modal-ov hidden" id="task-modal">
+  <div class="modal" style="max-width:340px">
+    <span class="modal-icon">➕</span>
+    <h2>Nueva tarea</h2>
+    <p id="tm-day-label">Para el día seleccionado</p>
+
+    <label class="tm-label">¿Qué hay que hacer?</label>
+    <input type="text" id="tm-text" class="tm-input" placeholder="Ej: Llamar al dentista...">
+
+    <label class="tm-label">Importancia</label>
+    <div class="sel-row" id="prio-row">
+      <button class="sel-btn" data-v="alta"  onclick="selPrio('alta')">🔴 Alta</button>
+      <button class="sel-btn active" data-v="media" onclick="selPrio('media')">🟡 Media</button>
+      <button class="sel-btn" data-v="baja"  onclick="selPrio('baja')">🟢 Baja</button>
+    </div>
+
+    <label class="tm-label">Responsable</label>
+    <div class="sel-row" id="assign-row">
+      <button class="sel-btn pA" data-v="A" onclick="selAssign('A')">Andrea</button>
+      <button class="sel-btn pB" data-v="B" onclick="selAssign('B')">Benjamín</button>
+      <button class="sel-btn pM" data-v="M" onclick="selAssign('M')">Martín</button>
+      <button class="sel-btn pT active" data-v="T" onclick="selAssign('T')">Todos</button>
+    </div>
+
+    <div class="tm-btns">
+      <button class="ubtn" style="background:#6B7280;flex:1;padding:12px;font-size:14px" onclick="closeTaskModal()">Cancelar</button>
+      <button class="ubtn" style="background:#16A34A;flex:2;padding:12px;font-size:14px" onclick="saveCustomTask()">✓ Guardar tarea</button>
+    </div>
   </div>
 </div>
 
@@ -184,24 +250,13 @@ body{font-family:'Nunito',sans-serif;background:#F5F2EC;min-height:100vh}
 
 <script>
 // ════════════════════════════════════════════════════════════════
-//  🔧  PASO 1: PEGA AQUÍ LA CONFIGURACIÓN DE TU PROYECTO FIREBASE
-//  Cómo obtenerla:
-//  1. Ve a https://console.firebase.google.com
-//  2. Crea un proyecto (gratis) o abre el tuyo
-//  3. Ve a "Project Settings" (⚙️) → pestaña "General"
-//  4. En "Your apps" → Web (</>), copia el objeto firebaseConfig
-// ════════════════════════════════════════════════════════════════
 const FB = {
   apiKey:      "AIzaSyDSf48mhSIr13-vRos-7o_aAZwWpL1IAG0",
   authDomain:  "planner-herreramarza.firebaseapp.com",
-  databaseURL: "https://planner-herreramarza-default-rtdb.firebaseio.com",   // ← termina en .firebaseio.com
+  databaseURL: "https://planner-herreramarza-default-rtdb.firebaseio.com",
   projectId:   "planner-herreramarza",
   appId:       "1:474769409440:web:32c79866501c742d0810c5"
 };
-// ════════════════════════════════════════════════════════════════
-//  🔧  PASO 2: EN FIREBASE CONSOLE → Realtime Database → Rules,
-//  pega estas reglas y publícalas (solo para uso familiar privado):
-//  { "rules": { ".read": true, ".write": true } }
 // ════════════════════════════════════════════════════════════════
 
 // ─── DATA ────────────────────────────────────────────────────────
@@ -209,6 +264,12 @@ const DAYS=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'
 const COLORS={A:'#2563EB',B:'#7C3AED',M:'#1C1917',T:'#D97706'};
 const LABELS={A:'Andrea',B:'Benjamín',M:'Martín',T:'Todos'};
 const BGS={A:'#EFF6FF',B:'#F5F3FF',M:'#F4F4F5',T:'#FFFBEB'};
+
+const PRIO={
+  alta: {label:'🔴 Alta',bg:'#FEF2F2',color:'#EF4444'},
+  media:{label:'🟡 Media',bg:'#FFFBEB',color:'#D97706'},
+  baja: {label:'🟢 Baja', bg:'#F0FDF4',color:'#16A34A'},
+};
 
 const TASKS=[
   [{t:'Pasear a Jerry (mañana)',p:'B',r:1},{t:'Alimentar a Jerry',p:'T',r:1},{t:'Hacer camas',p:'M',r:0},{t:'Lavar ropa',p:'A',r:0},{t:'Barrer / aspirar',p:'M',r:0},{t:'Pasear a Jerry (tarde)',p:'A',r:0},{t:'Cocinar cena ⚠️ Andrea nada',p:'B',r:1},{t:'Limpiar cocina',p:'M',r:1},{t:'Doblar ropa',p:'A',r:0}],
@@ -254,11 +315,17 @@ const TIPS=[
 const jsd=new Date().getDay();
 let activeTab='semana';
 let activeDay=jsd===0?6:jsd-1;
-let tasksState={};   // { "di-i": {done:true, by:"Andrea", at:"14:32"} }
-let boughtState={};  // { "ci-ii": {done:true, by:"Benjamín", at:"10:00"} }
+let tasksState={};        // { "di-i": {done:true, by:"Andrea", at:"14:32"} }
+let boughtState={};       // { "ci-ii": {done, by, at} }
+let customTasksState={};  // { day: { taskId: {text,priority,assignedTo,createdBy,done,by,at} } }
 let currentUser=localStorage.getItem('fp-user')||'';
 let useFirebase=false;
 let db=null;
+
+// New task modal state
+let addingForDay=0;
+let newPrio='media';
+let newAssign='T';
 
 // ─── FIREBASE ────────────────────────────────────────────────────
 function initFirebase(){
@@ -267,7 +334,6 @@ function initFirebase(){
     firebase.initializeApp(FB);
     db=firebase.database();
     useFirebase=true;
-    // Escuchar cambios en tiempo real
     db.ref('planner/tasks').on('value',s=>{
       tasksState=s.val()||{};
       if(activeTab==='semana')renderSemana();
@@ -276,7 +342,10 @@ function initFirebase(){
       boughtState=s.val()||{};
       if(activeTab==='compras')renderCompras();
     });
-    // Indicador de conexión
+    db.ref('planner/customTasks').on('value',s=>{
+      customTasksState=s.val()||{};
+      if(activeTab==='semana')renderSemana();
+    });
     db.ref('.info/connected').on('value',s=>{
       document.getElementById('cdot').style.background=s.val()?'#22C55E':'#EF4444';
     });
@@ -289,17 +358,19 @@ function initFirebase(){
 function fallbackLocal(){
   try{const d=localStorage.getItem('fp-tasks');if(d)tasksState=JSON.parse(d);}catch{}
   try{const d=localStorage.getItem('fp-bought');if(d)boughtState=JSON.parse(d);}catch{}
+  try{const d=localStorage.getItem('fp-custom');if(d)customTasksState=JSON.parse(d);}catch{}
   renderSemana();renderCompras();
+}
+function saveCustomLocal(){
+  try{localStorage.setItem('fp-custom',JSON.stringify(customTasksState));}catch{}
 }
 
 // ─── HELPERS ─────────────────────────────────────────────────────
 const ts=()=>new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
-
 function ucolor(name){
   const k=Object.entries(LABELS).find(([,v])=>v===name)?.[0];
   return k?COLORS[k]:'#16A34A';
 }
-
 function ring(pct,color,size=44){
   const r=(size-7)/2,c=2*Math.PI*r,off=c-(pct/100)*c;
   return`<svg width="${size}" height="${size}" style="transform:rotate(-90deg);display:block">
@@ -308,11 +379,15 @@ function ring(pct,color,size=44){
       stroke-dasharray="${c}" stroke-dashoffset="${off}" stroke-linecap="round"/>
   </svg>`;
 }
-
 function getPct(di){
-  const t=TASKS[di];
-  return t.length?Math.round(t.filter((_,i)=>tasksState[`${di}-${i}`]?.done).length/t.length*100):0;
+  const preset=TASKS[di];
+  const pd=preset.filter((_,i)=>tasksState[`${di}-${i}`]?.done).length;
+  const custom=customTasksState[di]?Object.values(customTasksState[di]):[];
+  const cd=custom.filter(t=>t.done).length;
+  const total=preset.length+custom.length;
+  return total?Math.round((pd+cd)/total*100):0;
 }
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
 // ─── USUARIO ─────────────────────────────────────────────────────
 function setUser(n){
@@ -338,10 +413,14 @@ function renderTabs(){
 
 // ─── RENDER SEMANA ────────────────────────────────────────────────
 function renderSemana(){
-  const done=TASKS[activeDay].filter((_,i)=>tasksState[`${activeDay}-${i}`]?.done).length;
-  const total=TASKS[activeDay].length;
+  const customForDay=customTasksState[activeDay]?Object.entries(customTasksState[activeDay]):[];
+  const presetDone=TASKS[activeDay].filter((_,i)=>tasksState[`${activeDay}-${i}`]?.done).length;
+  const customDone=customForDay.filter(([,t])=>t.done).length;
+  const done=presetDone+customDone;
+  const total=TASKS[activeDay].length+customForDay.length;
   const pct=total?Math.round(done/total*100):0;
 
+  // Day grid
   let dp='<div class="dgrid">';
   DAYS.forEach((d,i)=>{
     const p=getPct(i);
@@ -360,6 +439,7 @@ function renderSemana(){
     <div class="ptrack"><div class="pfill${pct===100?' done':''}" style="width:${pct}%"></div></div>
   </div>`;
 
+  // Preset tasks
   let tl='<div class="tasks">';
   TASKS[activeDay].forEach((task,i)=>{
     const k=`${activeDay}-${i}`;
@@ -378,14 +458,42 @@ function renderSemana(){
       <span class="badge" style="background:${BGS[task.p]};color:${pc}">${LABELS[task.p]}</span>
     </div>`;
   });
+
+  // Custom tasks section
+  if(customForDay.length>0){
+    tl+=`<div class="custom-section-label">Tareas agregadas</div>`;
+    customForDay.forEach(([taskId,task])=>{
+      const isDone=!!task.done;
+      const pc=COLORS[task.assignedTo]||'#6B7280';
+      const pinfo=PRIO[task.priority]||PRIO.media;
+      const byHtml=isDone&&task.by
+        ?`<div class="doneby" style="color:${ucolor(task.by)}">✓ ${task.by}${task.at?' · '+task.at:''}</div>`:'';
+      tl+=`<div class="task${isDone?' done':''}" style="border-left-color:${isDone?'#E5E7EB':pc}">
+        <div class="cb${isDone?' on':''}" onclick="toggleCustomTask(${activeDay},'${taskId}')"><span class="ck">✓</span></div>
+        <div class="tinfo" onclick="toggleCustomTask(${activeDay},'${taskId}')">
+          <div class="tt">${task.text}</div>
+          <span class="prio-badge" style="background:${pinfo.bg};color:${pinfo.color}">${pinfo.label}</span>
+          ${byHtml}
+        </div>
+        <span class="badge" style="background:${BGS[task.assignedTo]||BGS.T};color:${pc}">${LABELS[task.assignedTo]||'Todos'}</span>
+        <button class="del-btn" onclick="deleteCustomTask(${activeDay},'${taskId}')" title="Eliminar tarea">🗑️</button>
+      </div>`;
+    });
+  }
+
   tl+='</div>';
+
+  // Add task button
+  const addBtn=`<button class="add-task-btn" onclick="openAddTask(${activeDay})">
+    ＋ Agregar tarea para el ${DAYS[activeDay]}
+  </button>`;
 
   const leg=`<div class="leg"><div class="legt">Referencias</div><div class="legr">
     ${Object.entries(LABELS).map(([k,v])=>`<span class="badge" style="background:${BGS[k]};color:${COLORS[k]}">${v}</span>`).join('')}
     <span style="font-size:12px;font-weight:600;color:#6B7280;display:flex;align-items:center;gap:3px"><span style="color:#EF4444">★</span> Obligatoria</span>
   </div></div>`;
 
-  document.getElementById('sec-semana').innerHTML=dp+al+pb+tl+leg;
+  document.getElementById('sec-semana').innerHTML=dp+al+pb+tl+addBtn+leg;
 }
 
 // ─── RENDER MENU ──────────────────────────────────────────────────
@@ -434,7 +542,7 @@ function renderTips(){
   }</div>`;
 }
 
-// ─── ACCIONES ────────────────────────────────────────────────────
+// ─── ACCIONES TAREAS ─────────────────────────────────────────────
 function showTab(t){
   activeTab=t;
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
@@ -453,11 +561,36 @@ async function toggleTask(d,i){
   if(useFirebase){
     isDone?await db.ref(`planner/tasks/${k}`).remove()
            :await db.ref(`planner/tasks/${k}`).set({done:true,by:currentUser,at:ts()});
-    // Firebase listener re-renderiza automáticamente
   }else{
     if(isDone)delete tasksState[k];
     else tasksState[k]={done:true,by:currentUser,at:ts()};
     localStorage.setItem('fp-tasks',JSON.stringify(tasksState));
+    renderSemana();
+  }
+}
+
+async function toggleCustomTask(day,taskId){
+  if(!currentUser){changeUser();return;}
+  const task=customTasksState[day]?.[taskId];
+  if(!task)return;
+  const isDone=!!task.done;
+  const update=isDone?{done:false,by:null,at:null}:{done:true,by:currentUser,at:ts()};
+  if(useFirebase){
+    await db.ref(`planner/customTasks/${day}/${taskId}`).update(update);
+  }else{
+    Object.assign(customTasksState[day][taskId],update);
+    saveCustomLocal();
+    renderSemana();
+  }
+}
+
+async function deleteCustomTask(day,taskId){
+  if(!confirm('¿Eliminar esta tarea?'))return;
+  if(useFirebase){
+    await db.ref(`planner/customTasks/${day}/${taskId}`).remove();
+  }else{
+    if(customTasksState[day])delete customTasksState[day][taskId];
+    saveCustomLocal();
     renderSemana();
   }
 }
@@ -480,6 +613,74 @@ function resetCompras(){
   if(!confirm('¿Limpiar toda la lista de compras?'))return;
   useFirebase?db.ref('planner/bought').remove():(boughtState={},localStorage.setItem('fp-bought','{}'),renderCompras());
 }
+
+// ─── MODAL NUEVA TAREA ───────────────────────────────────────────
+function openAddTask(day){
+  if(!currentUser){changeUser();return;}
+  addingForDay=day;
+  newPrio='media';
+  newAssign='T';
+  document.getElementById('tm-text').value='';
+  document.getElementById('tm-day-label').textContent='Para el '+DAYS[day];
+  // Reset selectors
+  document.querySelectorAll('#prio-row .sel-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.v==='media');
+  });
+  document.querySelectorAll('#assign-row .sel-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.v==='T');
+  });
+  document.getElementById('task-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('tm-text').focus(),100);
+}
+
+function closeTaskModal(){
+  document.getElementById('task-modal').classList.add('hidden');
+}
+
+function selPrio(p){
+  newPrio=p;
+  document.querySelectorAll('#prio-row .sel-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.v===p);
+  });
+}
+
+function selAssign(u){
+  newAssign=u;
+  document.querySelectorAll('#assign-row .sel-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.v===u);
+  });
+}
+
+async function saveCustomTask(){
+  const text=document.getElementById('tm-text').value.trim();
+  if(!text){document.getElementById('tm-text').focus();return;}
+  const taskId=genId();
+  const newTask={
+    text,
+    priority:newPrio,
+    assignedTo:newAssign,
+    createdBy:currentUser,
+    createdAt:ts(),
+    done:false,
+    by:null,
+    at:null
+  };
+  closeTaskModal();
+  if(useFirebase){
+    await db.ref(`planner/customTasks/${addingForDay}/${taskId}`).set(newTask);
+  }else{
+    if(!customTasksState[addingForDay])customTasksState[addingForDay]={};
+    customTasksState[addingForDay][taskId]=newTask;
+    saveCustomLocal();
+    renderSemana();
+  }
+}
+
+// Cerrar modal tarea con Escape
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeTaskModal();
+  if(e.key==='Enter'&&!document.getElementById('task-modal').classList.contains('hidden'))saveCustomTask();
+});
 
 // ─── INIT ─────────────────────────────────────────────────────────
 if(currentUser)document.getElementById('modal').classList.add('hidden');
