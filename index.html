@@ -226,7 +226,7 @@ body{font-family:'Nunito',sans-serif;background:#F5F2EC;min-height:100vh}
 <div class="hdr">
   <div class="hdr-top">
     <div class="hdr-left">
-      <h1>🏠 Planner Familiar</h1>
+      <h1>🏠 Planner Familiar <span id="ver-badge" style="font-size:11px;font-weight:600;background:rgba(255,255,255,.15);border-radius:6px;padding:2px 7px;vertical-align:middle"></span></h1>
       <p>Andrea · Benjamín · Martín · Jerry 🐩</p>
     </div>
     <button class="chip" onclick="changeUser()">
@@ -249,6 +249,9 @@ body{font-family:'Nunito',sans-serif;background:#F5F2EC;min-height:100vh}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
 <script>
+// ─── VERSIÓN ─────────────────────────────────────────────────────
+const VERSION = 'v2';
+
 // ════════════════════════════════════════════════════════════════
 const FB = {
   apiKey:      "AIzaSyDSf48mhSIr13-vRos-7o_aAZwWpL1IAG0",
@@ -684,6 +687,7 @@ document.addEventListener('keydown',e=>{
 
 // ─── INIT ─────────────────────────────────────────────────────────
 if(currentUser)document.getElementById('modal').classList.add('hidden');
+document.getElementById('ver-badge').textContent=VERSION;
 updateChip();
 renderTabs();
 renderMenu();
