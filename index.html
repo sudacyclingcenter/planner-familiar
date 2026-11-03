@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏠 Planner Familiar</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#F5F2EC;min-height:100vh}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.78);display:flex;
+  align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(6px)}
+.modal-ov.hidden{display:none}
+.modal{background:#fff;border-radius:20px;padding:32px 28px;
+  max-width:300px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-icon{font-size:44px;margin-bottom:8px}
+.modal h2{font-size:22px;font-weight:800;color:#1C1917;margin-bottom:4px}
+.modal p{font-size:13px;color:#9CA3AF;margin-bottom:20px;line-height:1.5}
+.ubtn{width:100%;padding:14px;border-radius:12px;border:none;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:#fff;
+  margin-bottom:8px;transition:transform .1s;display:flex;
+  align-items:center;justify-content:center;gap:8px}
+.ubtn:last-child{margin-bottom:0}
+.ubtn:active{transform:scale(.97)}
+
+/* HEADER */
+.hdr{background:#1C1917;padding:14px 16px 0;position:sticky;top:0;z-index:10}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.hdr-left h1{color:#fff;font-size:18px;font-weight:800;line-height:1}
+.hdr-left p{color:#9CA3AF;font-size:11px;margin-top:2px}
+.chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);
+  border-radius:20px;padding:5px 11px;cursor:pointer;border:none;
+  font-family:'Nunito',sans-serif;transition:background .2s}
+.chip:hover{background:rgba(255,255,255,.2)}
+.chip span{color:#fff;font-size:12px;font-weight:700}
+.cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+.tabs{display:flex;gap:2px;overflow-x:auto}
+.tb{background:transparent;color:#9CA3AF;border:none;cursor:pointer;
+  padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Nunito',sans-serif;
+  font-weight:600;font-size:13px;transition:all .2s;white-space:nowrap}
+.tb.on{background:#F5F2EC;color:#1C1917;font-weight:800}
+
+/* CONTENT */
+.wrap{padding:18px 14px;max-width:680px;margin:0 auto}
+.sec{display:none}.sec.on{display:block}
+
+/* DAYS */
+.dgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:16px}
+.db{background:transparent;border:2px solid transparent;border-radius:12px;
+  padding:8px 2px;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;gap:4px;font-family:'Nunito',sans-serif;transition:all .2s}
+.db.on{background:#fff;border-color:#1C1917}
+.dlabel{font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase}
+.db.on .dlabel{color:#1C1917}
+.rw{position:relative;width:44px;height:44px}
+.rw svg{transform:rotate(-90deg);display:block}
+.rpct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:10px;font-weight:800;color:#6B7280}
+.db.on .rpct{color:#1C1917}
+.dsub{font-size:9px;color:#9CA3AF;font-weight:600;min-height:11px;
+  text-align:center;line-height:1.2}
+
+/* ALERTS & PROGRESS */
+.alert{border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;font-weight:700}
+.alert.amber{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E}
+.alert.red{background:#FEF2F2;border:1px solid #FECACA;color:#991B1B}
+.pcard{background:#fff;border-radius:12px;padding:13px 16px;margin-bottom:14px}
+.phdr{display:flex;justify-content:space-between;margin-bottom:7px;
+  font-size:13px;font-weight:700;color:#374151}
+.ptrack{background:#E5E7EB;border-radius:99px;height:8px}
+.pfill{border-radius:99px;height:8px;background:#D97706;transition:width .4s;min-width:0}
+.pfill.done{background:#16A34A}
+
+/* TASKS */
+.tasks{display:flex;flex-direction:column;gap:7px}
+.task{background:#fff;border-radius:10px;padding:11px 13px;display:flex;
+  align-items:flex-start;gap:11px;cursor:pointer;transition:opacity .2s;border-left:4px solid}
+.task.done{opacity:.6}
+.cb{width:22px;height:22px;border-radius:6px;flex-shrink:0;border:2px solid #D1D5DB;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px}
+.cb.on{background:#16A34A;border-color:#16A34A}
+.ck{color:#fff;font-size:13px;display:none}
+.cb.on .ck{display:block}
+.tinfo{flex:1;min-width:0}
+.tt{font-size:14px;font-weight:600;color:#374151;line-height:1.3}
+.task.done .tt{text-decoration:line-through;color:#9CA3AF}
+.doneby{font-size:10px;font-weight:700;margin-top:2px}
+.star{color:#EF4444;font-size:14px;flex-shrink:0;margin-top:1px}
+.badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;
+  flex-shrink:0;margin-top:1px}
+.task.done .badge{background:#F3F4F6!important;color:#9CA3AF!important}
+
+/* LEGEND */
+.leg{margin-top:16px;background:#fff;border-radius:12px;padding:12px 16px}
+.legt{font-size:11px;color:#9CA3AF;font-weight:700;margin-bottom:8px;
+  text-transform:uppercase;letter-spacing:.8px}
+.legr{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+
+/* MENU */
+.mcard{background:#fff;border-radius:12px;overflow:hidden;margin-bottom:10px}
+.mhdr{background:#1C1917;padding:8px 16px;display:flex;justify-content:space-between;align-items:center}
+.mday{color:#fff;font-weight:800;font-size:14px}
+.mnote{font-size:11px;color:#9CA3AF;font-weight:600}
+.mbody{padding:12px 16px;display:flex;flex-direction:column;gap:9px}
+.mrow{display:flex;gap:10px;align-items:flex-start}
+.mlabel{font-size:12px;font-weight:700;color:#9CA3AF;min-width:85px;padding-top:1px}
+.mfood{font-size:13px;font-weight:600;color:#374151;flex:1;line-height:1.4}
+
+/* SHOPPING */
+.scat{background:#fff;border-radius:12px;margin-bottom:10px;overflow:hidden}
+.scath{padding:9px 15px;background:#F9FAFB;border-bottom:1px solid #E5E7EB;
+  display:flex;align-items:center;gap:8px}
+.scatt{font-weight:800;font-size:14px;color:#1C1917}
+.scatn{font-size:12px;color:#9CA3AF;font-weight:600}
+.sitems{padding:6px}
+.sitem{display:flex;align-items:flex-start;gap:10px;padding:8px 9px;
+  border-radius:8px;cursor:pointer;transition:background .15s}
+.sitem.warn{background:#FFF7ED}
+.sitem.got{background:#F0FDF4}
+.scb{width:20px;height:20px;border-radius:4px;flex-shrink:0;border:1.5px solid #D1D5DB;
+  background:#fff;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;margin-top:1px}
+.scb.on{background:#16A34A;border-color:#16A34A}
+.sinfo{flex:1}
+.sitxt{font-size:13px;font-weight:500;color:#374151}
+.sitem.warn .sitxt{font-weight:700;color:#92400E}
+.sitem.got .sitxt{text-decoration:line-through;color:#6B7280}
+.sdoneby{font-size:10px;font-weight:700;margin-top:2px}
+.rbtn{width:100%;padding:12px;background:#fff;border:1.5px solid #E5E7EB;
+  border-radius:10px;font-family:'Nunito',sans-serif;font-weight:700;
+  font-size:14px;color:#6B7280;cursor:pointer;margin-top:2px}
+
+/* TIPS */
+.tiplist{display:flex;flex-direction:column;gap:11px}
+.tip{background:#fff;border-radius:12px;padding:15px 16px;border-left:4px solid}
+.tiph{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.tipi{font-size:20px}
+.tipt{font-weight:800;font-size:15px;color:#1C1917}
+.tipd{font-size:13px;font-weight:500;color:#6B7280;line-height:1.65}
+</style>
+</head>
+<body>
+
+<!-- MODAL: selección de usuario -->
+<div class="modal-ov" id="modal">
+  <div class="modal">
+    <div class="modal-icon">🏠</div>
+    <h2>¿Quién eres?</h2>
+    <p>Tu nombre quedará registrado cuando marques una tarea como completada</p>
+    <button class="ubtn" style="background:#2563EB" onclick="setUser('Andrea')">🏊‍♀️ Andrea</button>
+    <button class="ubtn" style="background:#7C3AED" onclick="setUser('Benjamín')">🚴 Benjamín</button>
+    <button class="ubtn" style="background:#1C1917" onclick="setUser('Martín')">🥊 Martín</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="hdr-left">
+      <h1>🏠 Planner Familiar</h1>
+      <p>Andrea · Benjamín · Martín · Jerry 🐩</p>
+    </div>
+    <button class="chip" onclick="changeUser()">
+      <div class="cdot" id="cdot" style="background:#F59E0B"></div>
+      <span id="uname">···</span>
+    </button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="wrap">
+  <div class="sec on" id="sec-semana"></div>
+  <div class="sec" id="sec-menu"></div>
+  <div class="sec" id="sec-compras"></div>
+  <div class="sec" id="sec-tips"></div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  🔧  PASO 1: PEGA AQUÍ LA CONFIGURACIÓN DE TU PROYECTO FIREBASE
+//  Cómo obtenerla:
+//  1. Ve a https://console.firebase.google.com
+//  2. Crea un proyecto (gratis) o abre el tuyo
+//  3. Ve a "Project Settings" (⚙️) → pestaña "General"
+//  4. En "Your apps" → Web (</>), copia el objeto firebaseConfig
+// ════════════════════════════════════════════════════════════════
+const FB = {
+  apiKey:      "AIzaSyDSf48mhSIr13-vRos-7o_aAZwWpL1IAG0",
+  authDomain:  "planner-herreramarza.firebaseapp.com",
+  databaseURL: "https://planner-herreramarza-default-rtdb.firebaseio.com",   // ← termina en .firebaseio.com
+  projectId:   "planner-herreramarza",
+  appId:       "1:474769409440:web:32c79866501c742d0810c5"
+};
+// ════════════════════════════════════════════════════════════════
+//  🔧  PASO 2: EN FIREBASE CONSOLE → Realtime Database → Rules,
+//  pega estas reglas y publícalas (solo para uso familiar privado):
+//  { "rules": { ".read": true, ".write": true } }
+// ════════════════════════════════════════════════════════════════
+
+// ─── DATA ────────────────────────────────────────────────────────
+const DAYS=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+const COLORS={A:'#2563EB',B:'#7C3AED',M:'#1C1917',T:'#D97706'};
+const LABELS={A:'Andrea',B:'Benjamín',M:'Martín',T:'Todos'};
+const BGS={A:'#EFF6FF',B:'#F5F3FF',M:'#F4F4F5',T:'#FFFBEB'};
+
+const TASKS=[
+  [{t:'Pasear a Jerry (mañana)',p:'B',r:1},{t:'Alimentar a Jerry',p:'T',r:1},{t:'Hacer camas',p:'M',r:0},{t:'Lavar ropa',p:'A',r:0},{t:'Barrer / aspirar',p:'M',r:0},{t:'Pasear a Jerry (tarde)',p:'A',r:0},{t:'Cocinar cena ⚠️ Andrea nada',p:'B',r:1},{t:'Limpiar cocina',p:'M',r:1},{t:'Doblar ropa',p:'A',r:0}],
+  [{t:'Pasear a Jerry (mañana)',p:'A',r:1},{t:'Alimentar a Jerry',p:'T',r:1},{t:'Hacer camas',p:'M',r:0},{t:'Revisar lista de compras',p:'A',r:0},{t:'🥊 Boxeo Martín',p:'M',r:0},{t:'Pasear a Jerry (tarde)',p:'B',r:0},{t:'Cocinar cena',p:'A',r:1},{t:'Limpiar cocina',p:'M',r:1},{t:'Sacar basura',p:'B',r:0}],
+  [{t:'Pasear a Jerry (mañana)',p:'B',r:1},{t:'Alimentar a Jerry',p:'T',r:1},{t:'Hacer camas',p:'M',r:0},{t:'Lavar ropa (2da tanda)',p:'A',r:0},{t:'Limpiar baños',p:'A',r:0},{t:'Pasear a Jerry (tarde)',p:'M',r:0},{t:'Cocinar cena ⚠️ Andrea nada',p:'B',r:1},{t:'Limpiar cocina',p:'M',r:1},{t:'Doblar ropa',p:'A',r:0}],
+  [{t:'Pasear a Jerry (mañana)',p:'A',r:1},{t:'Alimentar a Jerry',p:'T',r:1},{t:'Hacer camas',p:'M',r:0},{t:'🧠 Terapia de Martín',p:'M',r:1},{t:'Barrer y fregar',p:'B',r:0},{t:'Pasear a Jerry (tarde)',p:'B',r:0},{t:'Cocinar cena',p:'A',r:1},{t:'Limpiar cocina',p:'M',r:1},{t:'Revisar tareas de Martín',p:'B',r:0}],
+  [{t:'Pasear a Jerry (mañana)',p:'B',r:1},{t:'Alimentar a Jerry',p:'T',r:1},{t:'Hacer camas',p:'M',r:0},{t:'🥊 Boxeo Martín',p:'M',r:0},{t:'Aspirar toda la casa',p:'A',r:0},{t:'Pasear a Jerry (tarde)',p:'A',r:0},{t:'Cocinar cena familiar',p:'A',r:1},{t:'Limpiar cocina',p:'M',r:1},{t:'Sacar basura',p:'B',r:0},{t:'Preparar bolso finde Martín',p:'M',r:1}],
+  [{t:'Pasear a Jerry (mañana)',p:'A',r:1},{t:'Alimentar a Jerry',p:'T',r:1},{t:'Lavar camas y toallas',p:'A',r:0},{t:'Limpieza profunda casa',p:'T',r:0},{t:'Armar lista de compras',p:'A',r:0},{t:'Comprar supermercado',p:'T',r:1},{t:'Meal prep proteínas',p:'T',r:1},{t:'Pasear a Jerry (tarde)',p:'B',r:0},{t:'Cena especial en casa',p:'T',r:0}],
+  [{t:'Pasear a Jerry (mañana)',p:'B',r:1},{t:'Alimentar a Jerry',p:'T',r:1},{t:'Lavar ropa pendiente',p:'A',r:0},{t:'Planificar menú semana',p:'T',r:1},{t:'Batch cook proteínas',p:'T',r:1},{t:'Pasear a Jerry (tarde)',p:'A',r:0},{t:'Preparar loncheras semana',p:'B',r:0},{t:'Cocinar cena',p:'B',r:1},{t:'Dejar todo listo para el lunes',p:'T',r:0}],
+];
+
+const ALERTS=['🏊‍♀️ Andrea nada esta tarde — Benjamín cocina',null,'🏊‍♀️ Andrea nada esta tarde — Benjamín cocina','🧠 Terapia de Martín hoy','🎒 Martín se va al finde con su papá','👦 Martín está con su papá este fin de semana','👦 Martín está con su papá este fin de semana'];
+
+const MENU=[
+  {d:'Lunes',des:'Avena con berries + 2 huevos revueltos',alm:'Quinoa con atún + espinaca salteada',cen:'Pollo al horno + batata + brócoli'},
+  {d:'Martes',des:'Yogur griego + granola ⚠️ + plátano',alm:'Arroz integral + pechuga a la plancha',cen:'Carne molida + puré de papa + espinaca'},
+  {d:'Miércoles',des:'Tostadas integrales + palta + huevo pochado',alm:'Wrap de pollo + verduras + hummus',cen:'Pasta integral con bolognesa de carne'},
+  {d:'Jueves',des:'Smoothie ⚠️ proteico + huevo duro',alm:'Cazuela liviana de pollo',cen:'Salmón al horno + ensalada griega'},
+  {d:'Viernes',des:'Pancakes proteicos con miel',alm:'Ensalada César + pollo grillado',cen:'Pizza integral casera'},
+  {d:'Sábado',des:'Desayuno completo: huevos + fruta + tostadas',alm:'Asado liviano + ensalada verde',cen:'Cena libre / salida en familia'},
+  {d:'Domingo',des:'Revuelto de claras + palta + café',alm:'Pollo al curry + arroz basmati',cen:'Sopa de verduras + garbanzos'},
+];
+
+const COMPRAS=[
+  {cat:'🥩 Proteínas',items:['Pechuga de pollo 2 kg','Carne molida 1 kg','Atún en agua ×8','Filete de salmón 500 g','Huevos ×30','Yogur griego ×6','Queso cottage ×2','Claras líquidas 1 L']},
+  {cat:'🌾 Carbohidratos',items:['Avena 1 kg','Arroz integral 2 kg','Pasta integral 500 g','Batatas 1 kg','Pan integral ×2','Tortillas ×8','Quinoa 500 g']},
+  {cat:'🥦 Frutas y Verduras',items:['Brócoli 500 g','Espinaca 500 g','Tomates ×6','Lechuga ×2','Pepino ×3','Zanahoria 1 kg','Cebolla 1 kg','Ajo ×1 cabeza','Berries 500 g','Plátanos ×6','Manzanas ×6','Paltas ×4']},
+  {cat:'🥛 Lácteos',items:['Leche descremada 3 L','Queso laminado light','Mantequilla sin sal','Crema ácida light']},
+  {cat:'🫙 Despensa',items:['Aceite de oliva 500 ml','Sal y especias','⚠️ GRANOLA SIN MANÍ (revisar etiqueta)','⚠️ PROTEÍNA EN POLVO SIN MANÍ (revisar etiqueta)','Salsa de tomate natural','Miel 250 g','Limones ×6','Garbanzos en lata ×4']},
+  {cat:'🐩 Jerry',items:['Alimento poodle 3 kg','Snacks / premios para perro','Bolsas higiénicas ×50']},
+];
+
+const TIPS=[
+  {i:'🛒',t:'Compra mensual estratégica',d:'El primer sábado del mes, haz una compra grande en mayorista. Ahorras hasta un 30% en carnes y proteínas comprando en volumen y congelando porciones semanales.',c:'#DC2626'},
+  {i:'🍱',t:'Meal Prep dominical',d:'Dedica ~2 horas los domingos a cocinar proteínas en batch (pollo, carne, huevos duros). Ahorras cerca de 4 horas durante la semana y reduces el estrés de cocinar a diario.',c:'#2563EB'},
+  {i:'🧊',t:'Congelados inteligentes',d:'Cocina el doble y congela la mitad. Las pechugas marinadas, carne molida y legumbres cocidas duran hasta 3 meses en el freezer.',c:'#16A34A'},
+  {i:'⚠️',t:'Protocolo alergia maní – Martín',d:'Revisar siempre trazas en etiquetas de: granola, barras proteicas, chocolates, galletas y proteína en polvo. Avisar en restoranes. Llevar antihistamínico.',c:'#EF4444'},
+  {i:'💰',t:'Presupuesto estimado',d:'Para 3 personas activas en Santiago, el presupuesto de alimentación deportiva es de aprox. $270.000–$340.000/mes.',c:'#D97706'},
+  {i:'💪',t:'Nutrición deportiva familiar',d:'Apunta a 1.6–2g de proteína por kg de peso corporal al día. Prioriza la ingesta post-entreno en los primeros 30 minutos.',c:'#7C3AED'},
+];
+
+// ─── ESTADO ──────────────────────────────────────────────────────
+const jsd=new Date().getDay();
+let activeTab='semana';
+let activeDay=jsd===0?6:jsd-1;
+let tasksState={};   // { "di-i": {done:true, by:"Andrea", at:"14:32"} }
+let boughtState={};  // { "ci-ii": {done:true, by:"Benjamín", at:"10:00"} }
+let currentUser=localStorage.getItem('fp-user')||'';
+let useFirebase=false;
+let db=null;
+
+// ─── FIREBASE ────────────────────────────────────────────────────
+function initFirebase(){
+  if(FB.apiKey==='PEGA-AQUI')return;
+  try{
+    firebase.initializeApp(FB);
+    db=firebase.database();
+    useFirebase=true;
+    // Escuchar cambios en tiempo real
+    db.ref('planner/tasks').on('value',s=>{
+      tasksState=s.val()||{};
+      if(activeTab==='semana')renderSemana();
+    });
+    db.ref('planner/bought').on('value',s=>{
+      boughtState=s.val()||{};
+      if(activeTab==='compras')renderCompras();
+    });
+    // Indicador de conexión
+    db.ref('.info/connected').on('value',s=>{
+      document.getElementById('cdot').style.background=s.val()?'#22C55E':'#EF4444';
+    });
+  }catch(e){
+    console.warn('Firebase error:',e);
+    fallbackLocal();
+  }
+}
+
+function fallbackLocal(){
+  try{const d=localStorage.getItem('fp-tasks');if(d)tasksState=JSON.parse(d);}catch{}
+  try{const d=localStorage.getItem('fp-bought');if(d)boughtState=JSON.parse(d);}catch{}
+  renderSemana();renderCompras();
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────
+const ts=()=>new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+
+function ucolor(name){
+  const k=Object.entries(LABELS).find(([,v])=>v===name)?.[0];
+  return k?COLORS[k]:'#16A34A';
+}
+
+function ring(pct,color,size=44){
+  const r=(size-7)/2,c=2*Math.PI*r,off=c-(pct/100)*c;
+  return`<svg width="${size}" height="${size}" style="transform:rotate(-90deg);display:block">
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#E5E7EB" stroke-width="3.5"/>
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="3.5"
+      stroke-dasharray="${c}" stroke-dashoffset="${off}" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function getPct(di){
+  const t=TASKS[di];
+  return t.length?Math.round(t.filter((_,i)=>tasksState[`${di}-${i}`]?.done).length/t.length*100):0;
+}
+
+// ─── USUARIO ─────────────────────────────────────────────────────
+function setUser(n){
+  currentUser=n;
+  localStorage.setItem('fp-user',n);
+  document.getElementById('modal').classList.add('hidden');
+  updateChip();
+}
+function changeUser(){document.getElementById('modal').classList.remove('hidden');}
+function updateChip(){
+  if(!currentUser)return;
+  document.getElementById('uname').textContent=currentUser;
+  if(!useFirebase)document.getElementById('cdot').style.background='#F59E0B';
+}
+
+// ─── RENDER TABS ──────────────────────────────────────────────────
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=
+    [['semana','📅 Semana'],['menu','🍽️ Menú'],['compras','🛒 Compras'],['tips','💡 Tips']]
+    .map(([k,l])=>`<button class="tb${activeTab===k?' on':''}" onclick="showTab('${k}')">${l}</button>`)
+    .join('');
+}
+
+// ─── RENDER SEMANA ────────────────────────────────────────────────
+function renderSemana(){
+  const done=TASKS[activeDay].filter((_,i)=>tasksState[`${activeDay}-${i}`]?.done).length;
+  const total=TASKS[activeDay].length;
+  const pct=total?Math.round(done/total*100):0;
+
+  let dp='<div class="dgrid">';
+  DAYS.forEach((d,i)=>{
+    const p=getPct(i);
+    dp+=`<button class="db${activeDay===i?' on':''}" onclick="selDay(${i})">
+      <span class="dlabel">${d.slice(0,3)}</span>
+      <div class="rw">${ring(p,p===100?'#16A34A':'#D97706')}<span class="rpct">${p}%</span></div>
+      <span class="dsub">${i===4?'Finde':i>=5?'Sin Martín':''}</span>
+    </button>`;
+  });
+  dp+='</div>';
+
+  const al=ALERTS[activeDay]?`<div class="alert amber">${ALERTS[activeDay]}</div>`:'';
+
+  const pb=`<div class="pcard">
+    <div class="phdr"><span>${DAYS[activeDay]}</span><span>${done}/${total}${pct===100?' 🎉':''}</span></div>
+    <div class="ptrack"><div class="pfill${pct===100?' done':''}" style="width:${pct}%"></div></div>
+  </div>`;
+
+  let tl='<div class="tasks">';
+  TASKS[activeDay].forEach((task,i)=>{
+    const k=`${activeDay}-${i}`;
+    const info=tasksState[k];
+    const isDone=!!info?.done;
+    const pc=COLORS[task.p]||'#6B7280';
+    const byHtml=isDone&&info?.by
+      ?`<div class="doneby" style="color:${ucolor(info.by)}">✓ ${info.by}${info.at?' · '+info.at:''}</div>`:'';
+    tl+=`<div class="task${isDone?' done':''}" style="border-left-color:${isDone?'#E5E7EB':pc}" onclick="toggleTask(${activeDay},${i})">
+      <div class="cb${isDone?' on':''}"><span class="ck">✓</span></div>
+      <div class="tinfo">
+        <div class="tt">${task.t}</div>
+        ${byHtml}
+      </div>
+      ${task.r&&!isDone?'<span class="star">★</span>':''}
+      <span class="badge" style="background:${BGS[task.p]};color:${pc}">${LABELS[task.p]}</span>
+    </div>`;
+  });
+  tl+='</div>';
+
+  const leg=`<div class="leg"><div class="legt">Referencias</div><div class="legr">
+    ${Object.entries(LABELS).map(([k,v])=>`<span class="badge" style="background:${BGS[k]};color:${COLORS[k]}">${v}</span>`).join('')}
+    <span style="font-size:12px;font-weight:600;color:#6B7280;display:flex;align-items:center;gap:3px"><span style="color:#EF4444">★</span> Obligatoria</span>
+  </div></div>`;
+
+  document.getElementById('sec-semana').innerHTML=dp+al+pb+tl+leg;
+}
+
+// ─── RENDER MENU ──────────────────────────────────────────────────
+function renderMenu(){
+  let h=`<div class="alert red">⚠️ ALERGIA: Martín es alérgico al maní — verificar trazas en granola y proteína en polvo</div>`;
+  MENU.forEach((m,i)=>{
+    h+=`<div class="mcard">
+      <div class="mhdr"><span class="mday">${m.d}</span>${i>=4?`<span class="mnote">${i===4?'(Martín se va hoy)':'Sin Martín'}</span>`:''}</div>
+      <div class="mbody">${[['🌅 Desayuno',m.des],['☀️ Almuerzo',m.alm],['🌙 Cena',m.cen]].map(([l,f])=>`<div class="mrow"><span class="mlabel">${l}</span><span class="mfood">${f}</span></div>`).join('')}</div>
+    </div>`;
+  });
+  h+=`<p style="font-size:11px;color:#9CA3AF;margin-top:10px;text-align:center">⚠️ = revisar etiquetas por trazas de maní</p>`;
+  document.getElementById('sec-menu').innerHTML=h;
+}
+
+// ─── RENDER COMPRAS ───────────────────────────────────────────────
+function renderCompras(){
+  let h=`<div class="alert red">⚠️ ALERGIA MANÍ — Revisar etiquetas de granola y proteína en polvo antes de comprar</div>`;
+  COMPRAS.forEach((cat,ci)=>{
+    const n=cat.items.filter((_,ii)=>boughtState[`${ci}-${ii}`]?.done).length;
+    let items='';
+    cat.items.forEach((item,ii)=>{
+      const k=`${ci}-${ii}`,info=boughtState[k],isB=!!info?.done,isW=item.startsWith('⚠️');
+      const byHtml=isB&&info?.by?`<div class="sdoneby" style="color:${ucolor(info.by)}">✓ ${info.by}${info.at?' · '+info.at:''}</div>`:'';
+      items+=`<div class="sitem${isW?' warn':''}${isB?' got':''}" onclick="toggleBought('${k}')">
+        <div class="scb${isB?' on':''}"><span style="color:#fff;font-size:11px;font-weight:800;display:${isB?'block':'none'}">✓</span></div>
+        <div class="sinfo"><div class="sitxt">${item}</div>${byHtml}</div>
+      </div>`;
+    });
+    h+=`<div class="scat">
+      <div class="scath"><span class="scatt">${cat.cat}</span><span class="scatn">${n}/${cat.items.length}</span></div>
+      <div class="sitems">${items}</div>
+    </div>`;
+  });
+  h+=`<button class="rbtn" onclick="resetCompras()">🔄 Limpiar lista de compras</button>`;
+  document.getElementById('sec-compras').innerHTML=h;
+}
+
+// ─── RENDER TIPS ──────────────────────────────────────────────────
+function renderTips(){
+  document.getElementById('sec-tips').innerHTML=`<div class="tiplist">${
+    TIPS.map(t=>`<div class="tip" style="border-left-color:${t.c}">
+      <div class="tiph"><span class="tipi">${t.i}</span><span class="tipt">${t.t}</span></div>
+      <p class="tipd">${t.d}</p>
+    </div>`).join('')
+  }</div>`;
+}
+
+// ─── ACCIONES ────────────────────────────────────────────────────
+function showTab(t){
+  activeTab=t;
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+t).classList.add('on');
+  renderTabs();
+  if(t==='semana')renderSemana();
+  else if(t==='menu')renderMenu();
+  else if(t==='compras')renderCompras();
+  else if(t==='tips')renderTips();
+}
+function selDay(d){activeDay=d;renderSemana();}
+
+async function toggleTask(d,i){
+  if(!currentUser){changeUser();return;}
+  const k=`${d}-${i}`,isDone=!!tasksState[k]?.done;
+  if(useFirebase){
+    isDone?await db.ref(`planner/tasks/${k}`).remove()
+           :await db.ref(`planner/tasks/${k}`).set({done:true,by:currentUser,at:ts()});
+    // Firebase listener re-renderiza automáticamente
+  }else{
+    if(isDone)delete tasksState[k];
+    else tasksState[k]={done:true,by:currentUser,at:ts()};
+    localStorage.setItem('fp-tasks',JSON.stringify(tasksState));
+    renderSemana();
+  }
+}
+
+async function toggleBought(k){
+  if(!currentUser){changeUser();return;}
+  const isB=!!boughtState[k]?.done;
+  if(useFirebase){
+    isB?await db.ref(`planner/bought/${k}`).remove()
+       :await db.ref(`planner/bought/${k}`).set({done:true,by:currentUser,at:ts()});
+  }else{
+    if(isB)delete boughtState[k];
+    else boughtState[k]={done:true,by:currentUser,at:ts()};
+    localStorage.setItem('fp-bought',JSON.stringify(boughtState));
+    renderCompras();
+  }
+}
+
+function resetCompras(){
+  if(!confirm('¿Limpiar toda la lista de compras?'))return;
+  useFirebase?db.ref('planner/bought').remove():(boughtState={},localStorage.setItem('fp-bought','{}'),renderCompras());
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────
+if(currentUser)document.getElementById('modal').classList.add('hidden');
+updateChip();
+renderTabs();
+renderMenu();
+renderTips();
+initFirebase();
+if(!useFirebase)fallbackLocal();
+</script>
+</body>
+</html>
